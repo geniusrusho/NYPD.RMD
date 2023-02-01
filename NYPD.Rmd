@@ -1,0 +1,160 @@
+---
+title: "NYPD_Shooting_Data"
+author: "Maher Ali Rusho"
+date: "2023-01-31"
+output: html_document
+---
+
+
+<h1> Introduction </h1>
+This R document summarizes our Exploratory Data Analysis or EDA on the selected datasets  i.e NYPD Shooting Data analysis ,, ok Ok let’s ask and adress some research based question 1) Finding the relation between the Race of the victim and the Perpetrator who died in the shooting incident? 2) any noticeable relationship between the Perpetrator’s Race to the victim’s sex and age with a motive to recognize the Perpetrator’s race pattern and finding boxplot diagram 3) Finding the pattern and relationship between the victims ages and the location to recognize the trend throughout the year and increase the petrolling 4)Does region affect On This Shooting Data set??? We will go though the data set and find some of the answer
+<h2>Importing Libraries</h2>
+
+
+```{r}
+ library(tidyverse)
+ library(lubridate)
+ library(dplyr)
+```
+
+Then we must load the data for analysis
+
+But we can see that there is many wanted variables like -INCIDENT_KEY , -LATITUDE , LONGITUDE etc NOW WE MUST REMOVE UNWANTED VARIABLES
+<h3>importing Data</h3>
+<b> I will read the .csv file using read_csv and the .csv file using read.csv()
+```{r}
+NYPD_current <- read.csv("https://raw.githubusercontent.com/irene908/DATA-607/master/NYPD_Shooting_Incident_Data__Year_To_Date_.csv")
+DT::datatable(NYPD_current)
+```
+
+
+```{r}
+NYPD_historic <- read.csv("https://raw.githubusercontent.com/mascarenhasneil/NYPD_Shooting_Analytics/main/Data/NYPD_Shooting_Incident_Data__Historic_.csv")
+NYPD_historic
+```
+##Preprocessing Of Data:
+Before analysis the data we musr Preprocess it because it is as important as data analysis , to reduce bias in data analysis , we must remove some columns or select specific columns and removing NA values ... To clear the data sets we must use dim() function 
+```{r}
+dim(NYPD_current)
+```
+```{r}
+dim(NYPD_historic)
+```
+
+##Selecting Columnames
+```{r}
+colnames(NYPD_current)
+colnames(NYPD_historic)
+```
+```{r}
+colnames(NYPD_current)
+colnames(NYPD_historic)
+```
+<h3>Columns that is not needed for this assignment , can accelerate and include major bias</h3>
+
+```{r}
+df2 = NYPD_current %>% select(INCIDENT_KEY, 
+                   OCCUR_DATE,
+                   OCCUR_TIME,
+                   BORO, 
+                   STATISTICAL_MURDER_FLAG,
+                   PERP_AGE_GROUP,
+                   PERP_SEX,
+                   PERP_RACE,
+                   VIC_AGE_GROUP,
+                   VIC_SEX,
+                   VIC_RACE,
+                   Latitude,
+                   Longitude)
+```
+###to remove NAs from the data
+```{r}
+lapply(NYPD_current, function(x) sum(is.na(x)))
+```
+##Summary of the data 
+Let's summarize the data 
+```{r}
+summary(df2)
+```
+
+<h2>Data analysis</h2>
+<h3> current </h3>
+first we have to generate the current situation,,, We must count the borough name to give an idea of the shooting rate in the borough,, So we must install kable() funtion a method to generate a table against the given input 
+ugh)
+```{r}
+library(knitr)
+NYPD_current_borough <- table(NYPD_current$BORO)
+NYPD_current_borough <- as.data.frame(NYPD_current_borough)
+NYPD_current_borough$Percent <- round((NYPD_current_borough$Freq / sum(NYPD_current_borough$Freq)*100),2)
+kable(NYPD_current_borough)
+```
+Now let's do some visualizations of data,,
+use plot function to visualize it
+```{r}
+boxplot(NYPD_current_borough,NYPD_current_borough$Percent)
+```
+We can see from the boxplot that the most outlier is in the frequency data , and var1 has it's most least data 
+
+<h3> Methodology of the analysis </h3>
+we have  to use the genralized regression model to solve the  research question of finding relationship  between the race of victim and the perpetretor died in the NYC shooting 
+```{r}
+NYC_df <- read.csv("https://gist.githubusercontent.com/Zach-Ziyi-Liu/52d2b7aeebab13d3ebc12105051e32b9/raw/63f228daaae389f5ddfa8b78a2ef3686ff8b6770/NYPD_Shooting_Incident_Data__Historic_.csv")
+scaler_vector <- c("OCCUR_DATE","BORO","LOCATION_DESC","PERP_AGE_GROUP","PERP_SEX","PERP_RACE","VIC_AGE_GROUP","VIC_SEX","VIC_RACE","Lon_Lat")
+
+```
+
+```{r}
+library(ggplot2)
+NYC_df <- ggplot(df_2, aes(x = BORO)) +
+  geom_bar() +
+  labs(title = " New York Police Shooting Incident",
+       x = "County of New York City",
+       y = "Count of shooting Incidents") +
+  theme_minimal()
+NYC_df
+
+```
+
+<h4> Now we have to find that Which day should people in New-York be cautions of incidents???</h4>
+<b> first we have to formate the date i.e occur day </b>
+
+Now let's take a glimps of the data sets
+```{r}
+library(tidyverse)
+library(dplyr)
+library(knitr)
+str(NYPD)
+```
+
+
+<b><h4> Conclusion </h4> </b>
+
+<br> Ans: </br>
+<b> From NYPD historic data set we see that the people in New York Must be cautious at weekends and the time of attack is in the evening </b>
+
+
+<h1> Identifying Bias </h1>
+If i stay in New-York , I personally can believe that Bronx might have the most number of incidents..Although we can see from the data that Brooklyn has it's most peak at shooting incidents  then Bronx and queens and others respectively.. It is best to best validate the assumptions in a data driven way rather than believing your experience at all , which might be a serious issue and biased towards a  certain group of populations...Like citizen of Bronx
+
+Resourses I have used for this data analysis :
+[1]
+https://rpubs.com/Irene_J/699407
+[2]
+https://github.com/mascarenhasneil/NYPD_Shooting_Analytics/blob/main/docs/index.html
+[3]
+https://github.com/mascarenhasneil/NYPD_Shooting_Analytics/blob/main/docs/index.html
+[4]
+https://github.com/geniusrusho/studious-engine/blob/master/Untitled.Rmd
+
+
+
+
+
+
+
+
+
+
+
+
+
